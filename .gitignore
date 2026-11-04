@@ -1,0 +1,11 @@
+# Compiled binaries
+*.o
+*.out
+*.exe
+
+# Executables
+main
+
+# Debug files
+*.gdb
+core
