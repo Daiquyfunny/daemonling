@@ -98,43 +98,6 @@ void look_at_pid(pid_t r, ProcessSample *k) {
             // const char *filePath = filePathG(path, entry->d_name);
             
         }
-        // fetch CPU usage
-/*      
- *      if (strcmp(entry->d_name, "stat") == 0) {
-            const char *filePath = filePathG(path, entry->d_name);
-
-            unsigned long long user, nice, sys, idle, iowait, irq, sirq, steal;
-            unsigned long long aTotal, bTotal;
-            double cpu_usage;
-
-            FILE *j = fopen("/proc/stat", "r");
-            fscanf(j, "cpu %llu %llu %llu %llu %llu %llu %llu %llu", 
-                    &user, &nice, &sys, &idle, &iowait, &irq, &sirq, &steal);
-            aTotal = user + nice + sys + idle + iowait + irq + sirq + steal;
-//            finishes calculating
-            fclose(j);
-            unsigned long long one = get_process_ticks(filePath);
-
-            usleep(500000);
-
-            j = fopen("/proc/stat", "r");
-            fscanf(j, "cpu %llu %llu %llu %llu %llu %llu %llu %llu",
-                    &user, &nice, &sys, &idle, &iowait, &irq, &sirq, &steal);
-            bTotal = user + nice + sys + idle + iowait + irq + sirq + steal;
-            fclose(j);
-            unsigned long long two = get_process_ticks(filePath);
-
-            unsigned long long sys_total = bTotal - aTotal; // sys_total
-            unsigned long long deltaP = two - one;       // process
-            double cpu_pct = (sys_total > 0) ? 100.0 * deltaP / sys_total : 0.0;
-            printf("done calculating pt finished\n");
-            printf("PID_NUMBER: %d\ncpu_pct: %lf\n", pid, cpu_pct);
-
-        } 
-*/
-        
-        
-
     }
     
     closedir(pid_f);
@@ -293,39 +256,12 @@ int main() {
         total_files += 1;
     }
     printf("total_files %lu\n", total_files);
-    //TODO: design CPU sample stuff <- 15th Oct, 2026
     signal(SIGINT, handle_sigint);
     while (running) {
         readSystemUsage(process, count);
     }
     printf("done reading\n");
 
-    // read system CPU usage completed <- 18th oct, 2026.
-    // TODO: design process usage <- same date as above <- done 19th Oct
-    // TODO: design interface ASCII. <- 19th Oct.
-
-/*
-    readSystemCPU(&a);
-    usleep(500000);
-    readSystemCPU(&b);
-    
-    unsigned long long delta_total = b.total - a.total;
-    unsigned long long delta_idle = b.idle - a.idle;
-
-    for (size_t i = 0; i < count; i++) {
-        char pidStr[32];
-        snprintf(pidStr, sizeof(pidStr), "%d/stat", process[i].pid);
-        const char *filePath = filePathG("/proc/", pidStr);
-        process[i].ticks = get_process_ticks(filePath);
-    }
-
-    for (size_t i = 0; i < count; i++) {
-        char pidStr[32];
-        snprintf(pidStr, sizeof(pidStr), "%d/stat", process[i].pid);
-        const char *filePath = filePathG("/proc/", pidStr);
-        process[i].ticksNext = get_process_ticks(filePath);
-    }
-*/
     fclose(log);
     closedir(dir);
 
